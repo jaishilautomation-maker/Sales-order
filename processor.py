@@ -176,8 +176,10 @@ def _to_kg_ltr(row):
     brand, qty, rate = row['Brand'], row['Balance Qty'], row['Rate']
     if brand in WDG_BRANDS:
         return (round(qty * 1000, 2), 'kg') if rate > MAX_RATE else (round(qty, 2), 'kg')
-    size, unit = _parse_size(row['Product Name'])
-    return (round(qty * size, 3), unit) if size else (qty, 'pcs')
+    # Brand products: Balance Qty is already entered in ltr/kg in the Tally sales order.
+    # Just extract the unit from the product name — do NOT multiply by pack size.
+    _, unit = _parse_size(row['Product Name'])
+    return (round(qty, 3), unit) if unit else (round(qty, 3), 'pcs')
 
 
 # ─────────────────────────────────────────────────────────────────────────
